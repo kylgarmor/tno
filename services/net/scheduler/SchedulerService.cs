@@ -43,6 +43,30 @@ public class SchedulerService : BaseService
         //     .Bind(this.Configuration.GetSection("Service"))
         //     .ValidateDataAnnotations();
 
+        AddCustomHealthChecks(services);
+
+        return services;
+    }
+
+    /// <summary>
+    /// Add health checks specific to this service
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    protected virtual IServiceCollection AddCustomHealthChecks(IServiceCollection services)
+    {
+        services.AddHealthChecks().AddCheck<HealthChecks.Service.ServiceStatusHealthCheck>(
+            name:"Service Baseline",
+            tags: new[] { "ready", "detail" }
+        );
+        
+        services.AddHealthChecks()
+            .AddUrlGroup(
+                new Uri($"{this.Configuration["Service:ApiUrl"]}/health"),
+                name: "MMI API",
+                tags: new[] { "ready", "detail" }
+            );
+
         return services;
     }
     #endregion

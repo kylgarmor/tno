@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using TNO.Services.Content.Config;
 using TNO.Services.Runners;
 using TNO.Kafka;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace TNO.Services.Content;
 
@@ -50,5 +52,33 @@ public class ContentService : KafkaConsumerService
 
         return services;
     }
+
+    /// <summary>
+    /// Add health checks specific to this service
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    protected override IServiceCollection AddCustomHealthChecks(IServiceCollection services)
+    {
+        base.AddCustomHealthChecks(services);
+
+        var kafkaProducerConfig = new ProducerConfig();
+        this.Configuration.GetSection("Kafka:Producer").Bind(kafkaProducerConfig);
+        services.AddHealthChecks()
+            .AddKafka(
+                kafkaProducerConfig,
+                topic: "healthchecks-topic",
+                name: "kafka health",
+                tags: new[] { "ready", "detail" }
+            );
+
+        return services;
+    }
+
+    protected override void ConfigureHealthCheckEndPoints(IApplicationBuilder app)
+    {
+        base.ConfigureHealthCheckEndPoints(app);
+    }
+
     #endregion
 }

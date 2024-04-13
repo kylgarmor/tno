@@ -156,7 +156,7 @@ spec:
                   key: PASSWORD
           livenessProbe:
             httpGet:
-              path: "/health"
+              path: "/health/live"
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 30
@@ -166,7 +166,7 @@ spec:
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: "/health"
+              path: "/health/ready"
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 30

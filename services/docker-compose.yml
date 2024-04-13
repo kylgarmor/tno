@@ -28,7 +28,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - syndication-service
     healthcheck:
       test: curl -s -f http://localhost:8081/health || exit 1
       interval: 1m
@@ -62,7 +64,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - capture-service
     volumes:
       - tno-av-data:/data
     healthcheck:
@@ -98,7 +102,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - clip-service
     volumes:
       - tno-av-data:/data
     healthcheck:
@@ -134,7 +140,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - image-service
     volumes:
       - tno-av-data:/data
     healthcheck:
@@ -170,7 +178,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - filemonitor-service
     volumes:
       - tno-av-data:/data
     healthcheck:
@@ -206,7 +216,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - content-service
     volumes:
       - tno-av-data:/data
     healthcheck:
@@ -242,7 +254,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - contentmigration-service
     volumes:
       - tno-av-data:/data
     healthcheck:
@@ -280,7 +294,9 @@ services:
       - elastic
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - indexing-service
     healthcheck:
       test: curl -s -f http://localhost:8081/health || exit 1
       interval: 1m
@@ -314,7 +330,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - transcription-service
     volumes:
       - tno-api-data:/data
     healthcheck:
@@ -350,7 +368,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - nlp-service
     healthcheck:
       test: curl -s -f http://localhost:8081/health || exit 1
       interval: 1m
@@ -384,7 +404,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - filecopy-service
     volumes:
       - tno-av-data:/data
     healthcheck:
@@ -420,7 +442,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - notification-service
     healthcheck:
       test: curl -s -f http://localhost:8081/health || exit 1
       interval: 1m
@@ -454,7 +478,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - reporting-service
     healthcheck:
       test: curl -s -f http://localhost:8081/health || exit 1
       interval: 1m
@@ -488,7 +514,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - folder-collection-service
     healthcheck:
       test: curl -s -f http://localhost:8081/health || exit 1
       interval: 1m
@@ -523,7 +551,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - extract-quotes-service
 
   ffmpeg:
     image: tno:ffmpeg
@@ -551,7 +581,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - ffmpeg-service
     volumes:
       - tno-api-data:/data
     healthcheck:
@@ -587,7 +619,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - scheduler-service
     healthcheck:
       test: curl -s -f http://localhost:8081/health || exit 1
       interval: 1m
@@ -621,7 +655,9 @@ services:
       - api
       - broker
     networks:
-      - tno
+      tno:
+        aliases:
+          - event-handler-service
     healthcheck:
       test: curl -s -f http://localhost:8081/health || exit 1
       interval: 1m

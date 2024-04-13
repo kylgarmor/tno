@@ -32,6 +32,7 @@ using TNO.DAL;
 using TNO.Kafka;
 using TNO.Keycloak;
 using TNO.TemplateEngine;
+using TNO.API.Extensions;
 
 DotNetEnv.Env.Load();
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -253,6 +254,8 @@ builder.Services.AddSignalR(options =>
 builder.Services.AddHostedService<QueuedHostedService>();
 builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
 
+builder.Services.AddApiHealthChecks(config);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -283,6 +286,9 @@ app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 app.UseMiddleware(typeof(ResponseTimeMiddleware));
 
 // app.UseHttpsRedirection();
+
+app.ConfigureHealthCheckEndPoints();
+
 app.UseRouting();
 app.UseCors("CorsPolicy");
 

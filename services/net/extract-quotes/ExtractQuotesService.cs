@@ -53,5 +53,24 @@ public class ExtractQuotesService : KafkaConsumerService
 
         return services;
     }
+
+    /// <summary>
+    /// Add health checks specific to this service
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    protected override IServiceCollection AddCustomHealthChecks(IServiceCollection services)
+    {
+        base.AddCustomHealthChecks(services);
+
+        services.AddHealthChecks()
+            .AddUrlGroup(
+                new Uri($"{this.Configuration["Service:CoreNLPApiUrl"]}/ready"),
+                name: "CoreNLP API",
+                tags: new[] { "ready", "detail" }
+            );
+
+        return services;
+    }
     #endregion
 }

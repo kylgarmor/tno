@@ -23,6 +23,7 @@
     <ProjectReference Include="..\ches\TNO.Ches.csproj" />
     <ProjectReference Include="..\core\TNO.Core.csproj" />
     <ProjectReference Include="..\elastic\TNO.Elastic.csproj" />
+    <ProjectReference Include="..\health\TNO.Health.csproj" />
     <ProjectReference Include="..\kafka\TNO.Kafka.csproj" />
     <ProjectReference Include="..\models\TNO.Models.csproj" />
   </ItemGroup>

@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\net\health\TNO.Health.csproj" />
     <ProjectReference Include="..\..\..\libs\net\services\TNO.Services.csproj" />
   </ItemGroup>
 

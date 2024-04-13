@@ -1,19 +1,22 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TNO.Ches;
 using TNO.Core.Http;
 using TNO.Core.Http.Configuration;
 using TNO.Services.Config;
-using TNO.Services.Controllers;
 
 namespace TNO.Services.Runners;
 
@@ -85,7 +88,7 @@ public abstract class BaseService
             .AddEnvironmentVariables()
             .AddCommandLine(args ?? Array.Empty<string>());
     }
-
+    
     /// <summary>
     /// Configure dependency injection.
     /// </summary>
@@ -143,8 +146,9 @@ public abstract class BaseService
         services.AddHttpClient(typeof(BaseService).FullName ?? nameof(BaseService), client => { });
 
         // API services
-        services.AddMvcCore()
-            .AddApplicationPart(typeof(HealthController).Assembly);
+        services.AddMvcCore();
+            // .AddApplicationPart(typeof(HealthController).Assembly);
+        
         services.AddHttpContextAccessor()
             .AddControllers(options =>
             {
@@ -211,11 +215,41 @@ public abstract class BaseService
 
         // app.UseHttpsRedirection();
         this.App.UseRouting();
+        ConfigureHealthCheckEndPoints(this.App);
         this.App.UseCors();
 
         this.App.MapControllers();
 
         await this.App.RunAsync();
     }
+
+    protected virtual void ConfigureHealthCheckEndPoints(IApplicationBuilder app) {
+        app.UseHealthChecks("/health/live", new HealthCheckOptions()
+        {
+            Predicate = (_) => false
+        });
+        app.UseHealthChecks("/health/ready", new HealthCheckOptions()
+        {
+            Predicate = (check) => check.Tags.Contains("ready"),
+        });
+        app.UseHealthChecks("/health/ready/detail",
+            new HealthCheckOptions
+            {
+                Predicate = (check) => check.Tags.Contains("detail"),
+                ResponseWriter = async (context, report) =>
+                {
+                    var result = JsonSerializer.Serialize(
+                        new
+                        {
+                            status = report.Status.ToString(),
+                            monitors = report.Entries.Select(e => new { key = e.Key, value = Enum.GetName(typeof(HealthStatus), e.Value.Status) })
+                        });
+                    context.Response.ContentType = MediaTypeNames.Application.Json;
+                    await context.Response.WriteAsync(result);
+                }
+            }
+        );
+    }
+
     #endregion
 }

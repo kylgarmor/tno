@@ -42,7 +42,27 @@ public abstract class KafkaConsumerService : BaseService
             .Configure<ConsumerConfig>(this.Configuration.GetSection("Kafka:Consumer"))
             .AddTransient<IKafkaListener<string, SourceContent>, KafkaListener<string, SourceContent>>();
 
+        AddCustomHealthChecks(services);
+
         return services;
     }
+
+    protected virtual IServiceCollection AddCustomHealthChecks(IServiceCollection services)
+    {
+        services.AddHealthChecks().AddCheck<HealthChecks.Service.ServiceStatusHealthCheck>(
+            name:"Service Baseline",
+            tags: new[] { "ready", "detail" }
+        );
+        
+        services.AddHealthChecks()
+            .AddUrlGroup(
+                new Uri($"{this.Configuration["Service:ApiUrl"]}/health"),
+                name: "MMI API",
+                tags: new[] { "ready", "detail" }
+            );
+
+        return services;
+    }
+    
     #endregion
 }

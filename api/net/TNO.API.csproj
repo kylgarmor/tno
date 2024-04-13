@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\libs\net\core\TNO.Core.csproj" />
     <ProjectReference Include="..\..\libs\net\css\TNO.CSS.csproj" />
     <ProjectReference Include="..\..\libs\net\dal\TNO.DAL.csproj" />
+    <ProjectReference Include="..\..\libs\net\health\TNO.Health.csproj" />
     <ProjectReference Include="..\..\libs\net\kafka\TNO.Kafka.csproj" />
     <ProjectReference Include="..\..\libs\net\keycloak\TNO.Keycloak.csproj" />
     <ProjectReference Include="..\..\libs\net\models\TNO.Models.csproj" />
